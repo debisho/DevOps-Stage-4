@@ -1,4 +1,6 @@
 version: '3.8'
+include:
+  - ./compose.traefik.yml
 
 services:
   frontend:
@@ -15,6 +17,14 @@ services:
       PORT: ${PORT}
       AUTH_API_ADDRESS: ${AUTH_API_ADDRESS}
       TODOS_API_ADDRESS: ${TODOS_API_ADDRESS}
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`deehng.duckdns.org`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt" 
+      - "traefik.http.services.frontend.loadbalancer.server.port=8080"
 
   auth-api:
     build: ./auth-api
@@ -24,6 +34,14 @@ services:
       AUTH_API_PORT: ${AUTH_API_PORT}
       JWT_SECRET: ${JWT_SECRET}
       USERS_API_ADDRESS: ${USERS_API_ADDRESS}
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/auth`)"
+      - "traefik.http.routers.auth.entrypoints=websecure"
+      - "traefik.http.routers.auth.tls.certresolver=letsencrypt"
+      - "traefik.http.services.auth.loadbalancer.server.port=8081"
     
   todos-api:
     build: ./todos-api
@@ -36,6 +54,14 @@ services:
       REDIS_CHANNEL: ${REDIS_CHANNEL}
     depends_on:
       - redis
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.todos.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/todos`)"
+      - "traefik.http.routers.todos.entrypoints=websecure"
+      - "traefik.http.routers.todos.tls.certresolver=letsencrypt"
+      - "traefik.http.services.todos.loadbalancer.server.port=8082"
 
   users-api:
     build: ./users-api
@@ -44,6 +70,14 @@ services:
     environment:
       SERVER_PORT: ${SERVER_PORT}
       JWT_SECRET: ${JWT_SECRET}
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/users`)"
+      - "traefik.http.routers.users.entrypoints=websecure"
+      - "traefik.http.routers.users.tls.certresolver=letsencrypt"
+      - "traefik.http.services.users.loadbalancer.server.port=8083"
   
 
   log-processor:
@@ -56,9 +90,17 @@ services:
       REDIS_CHANNEL: ${REDIS_CHANNEL}
     depends_on:
       - redis
+    networks:
+      - app-network
 
   redis:
     image: "redis:alpine"
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - app-network
+
+  networks:
+  app-network:
+    external: true

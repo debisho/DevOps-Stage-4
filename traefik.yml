@@ -1,0 +1,33 @@
+---
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: kemishodamola@gmail.com
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+# tls:
+#   certificates:
+#     - certFile: "/letsencrypt/live/banmtodoapp.duckdns.org/fullchain.pem"
+#       keyFile: "/letsencrypt/live/banmtodoapp.duckdns.org/privkey.pem"
+
+providers:
+  docker:
+    exposedByDefault: false
