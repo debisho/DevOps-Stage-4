@@ -4,8 +4,8 @@ include:
 
 services:
   frontend:
-    #build: ./frontend
-    image: frontend
+    build: ./frontend
+    #image: frontend
     ports:
       - "8080:8080"
     depends_on:
@@ -21,7 +21,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`deehng.duckdns.org`)"
+      - "traefik.http.routers.frontend.rule=Host(`hngtodo.duckdns.org`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt" 
       - "traefik.http.services.frontend.loadbalancer.server.port=8080"
@@ -38,7 +38,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/auth`)"
+      - "traefik.http.routers.auth.rule=Host(`hngtodo.duckdns.org`) && PathPrefix(`/api/auth`)"
       - "traefik.http.routers.auth.entrypoints=websecure"
       - "traefik.http.routers.auth.tls.certresolver=letsencrypt"
       - "traefik.http.services.auth.loadbalancer.server.port=8081"
@@ -58,7 +58,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.todos.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/todos`)"
+      - "traefik.http.routers.todos.rule=Host(`hngtodo.duckdns.org`) && PathPrefix(`/api/todos`)"
       - "traefik.http.routers.todos.entrypoints=websecure"
       - "traefik.http.routers.todos.tls.certresolver=letsencrypt"
       - "traefik.http.services.todos.loadbalancer.server.port=8082"
@@ -74,7 +74,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.users.rule=Host(`deehng.duckdns.org`) && PathPrefix(`/api/users`)"
+      - "traefik.http.routers.users.rule=Host(`hngtodo.duckdns.org`) && PathPrefix(`/api/users`)"
       - "traefik.http.routers.users.entrypoints=websecure"
       - "traefik.http.routers.users.tls.certresolver=letsencrypt"
       - "traefik.http.services.users.loadbalancer.server.port=8083"
